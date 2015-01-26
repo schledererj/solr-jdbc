@@ -1,0 +1,1 @@
+#A simple Solr JDBC connection holder that can be injected by JNDI.

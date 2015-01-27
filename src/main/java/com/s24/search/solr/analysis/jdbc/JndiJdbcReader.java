@@ -77,6 +77,8 @@ public class JndiJdbcReader implements JdbcReader {
     *
     * @param args
     *           Configuration.
+    * @param originalParamName
+    *           Default synonym file name.
     * @return Configuration.
     */
    public static JndiJdbcReader createFromSolrParams(Map<String, String> args, String originalParamName) {
@@ -99,8 +101,7 @@ public class JndiJdbcReader implements JdbcReader {
     *           JNDI name.
     * @param sql
     *           SQL.
-    * @param specificResultSetHandler
-    * @param ignoreMissingDatabase
+    * @param ignore
     *           Ignore a missing database?.
     */
    public JndiJdbcReader(String jndiName, String sql, boolean ignore) {
@@ -197,7 +198,7 @@ public class JndiJdbcReader implements JdbcReader {
 
       return new QueryRunner(dataSource);
    }
-   
+
    @Override
    public String getSql() {
       return sql;

@@ -26,8 +26,7 @@ Then execute the release chain
     $ git commit -a -m "pushes to release version $NEXT_VERSION"
     $ mvn -P release
     
-Log into [OSS](https://oss.sonatype.org/#stagingRepositories), look for the `coms24-XXXX` repository and
-"close" it. If all checks passed, "release" it in OSS. Then, increment to next development version:
+Wait for the relase to be accepted. Then increment to next development version:
     
     $ git tag -a v$NEXT_VERSION -m "`curl -s http://whatthecommit.com/index.txt`"
     $ mvn org.codehaus.mojo:versions-maven-plugin:2.0:set -DgenerateBackupPoms=false -DnewVersion=$NEXT_DEVELOPMENT_VERSION

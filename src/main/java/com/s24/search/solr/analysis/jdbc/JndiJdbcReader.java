@@ -191,6 +191,7 @@ public class JndiJdbcReader implements JdbcReader {
    public QueryRunner getJdbcRunner() {
       if (dataSource == null) {
          if (ignore) {
+            logger.warn("Could not load Jdbc Datasource!");
             return null;
          }
          throw new IllegalArgumentException("Missing data source.");

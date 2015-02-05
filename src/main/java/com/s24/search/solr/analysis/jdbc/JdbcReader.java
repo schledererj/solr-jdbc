@@ -22,7 +22,7 @@ public interface JdbcReader {
    QueryRunner getJdbcRunner();
 
    /**
-    * @return plan SQL query.
+    * @return plain SQL query.
     */
    String getSql();
 }

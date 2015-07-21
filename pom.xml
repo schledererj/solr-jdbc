@@ -4,7 +4,7 @@
     <groupId>com.s24.search.solr</groupId>
     <artifactId>solr-jdbc</artifactId>
     <name>solr-jdbc</name>
-    <version>1.1.0</version>
+    <version>1.1.1-SNAPSHOT</version>
     <description>A simple Solr JDBC connection holder that can be injected by JNDI.</description>
     <url>https://github.com/shopping24/solr-jdbc</url>
     <licenses>

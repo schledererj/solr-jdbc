@@ -81,6 +81,7 @@ public class JndiJdbcReader implements JdbcReader {
     *           Default synonym file name.
     * @return Configuration.
     */
+   @SuppressWarnings("unused") // API
    public static JndiJdbcReader createFromSolrParams(Map<String, String> args, String originalParamName) {
       Preconditions.checkNotNull(args);
 
@@ -132,26 +133,25 @@ public class JndiJdbcReader implements JdbcReader {
          dataSource = (DataSource) ctx.lookup(jndiName);
          ctx.close();
       } catch (NameNotFoundException e) {
-         logger.error("Data source {} not found.", jndiName, e);
+         logger.error("Data source {} not found: {}.", jndiName, e.getMessage());
          if (!ignore) {
             throw new IllegalArgumentException("Missing data source.", e);
          }
       } catch (NamingException e) {
-         logger.error("JNDI error.", e);
+         logger.error("JNDI error: {}.", e.getMessage());
          throw new IllegalArgumentException("JNDI error.", e);
       } catch (ClassCastException e) {
-         logger.error("The JNDI resource {} is no data source.", jndiName, e);
+         logger.error("The JNDI resource {} is no data source: {}.", jndiName, e.getMessage());
          throw new IllegalArgumentException("The JNDI resource is no data source.", e);
       }
 
       // Check database connection information of data source
       if (dataSource != null) {
          try (Connection connection = dataSource.getConnection()) {
-            // Just get the connection to check if data source parameters are
-            // configured correctly.
+            // Just get the connection to check if data source parameters are configured correctly.
          } catch (SQLException e) {
             dataSource = null;
-            logger.error("Failed to connect to database of data source {}.", jndiName, e);
+            logger.error("Failed to connect to database of data source {}: {}.", jndiName, e.getMessage());
             if (!ignore) {
                throw new IllegalArgumentException("Failed to connect to the database.", e);
             }

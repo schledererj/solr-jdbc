@@ -1,10 +1,13 @@
 package com.s24.search.solr.analysis;
 
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Map;
 
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.WhitespaceTokenizerFactory;
 import org.apache.lucene.analysis.util.TokenFilterFactory;
 import org.apache.solr.analysis.TokenizerChain;
@@ -35,12 +38,25 @@ public class SearcherAwareReloaderTest {
    
    @Mock
    private FieldType fieldType;
-   
-   private TokenizerChain analyzer;
-   
+
    @Mock
-   private Factory tokenFilterFactory;
-   
+   private Factory indexTokenFilterFactory;
+
+   private TokenizerChain indexAnalyzer;
+
+   @Mock
+   private Factory queryTokenFilterFactory;
+
+   private TokenizerChain queryAnalyzer;
+
+   @Mock
+   private Analyzer simpleAnalyzer;
+
+   /**
+    * Reloader under test.
+    */
+   private SearcherAwareReloader reloader;
+
    @Before
    public void setUp() {
       Map<String, FieldType> fieldTypes = Maps.newHashMap();
@@ -49,25 +65,61 @@ public class SearcherAwareReloaderTest {
       when(searcher.getSchema()).thenReturn(schema);
       when(schema.getFieldTypes()).thenReturn(fieldTypes);
 
-      analyzer = new TokenizerChain(
+      indexAnalyzer = new TokenizerChain(
             new WhitespaceTokenizerFactory(Maps.<String, String>newHashMap()), 
-            new TokenFilterFactory[]{ tokenFilterFactory });
-      when(fieldType.getIndexAnalyzer()).thenReturn(analyzer);
-      when(fieldType.getQueryAnalyzer()).thenReturn(analyzer);
+            new TokenFilterFactory[]{ indexTokenFilterFactory });
+      queryAnalyzer = new TokenizerChain(
+            new WhitespaceTokenizerFactory(Maps.<String, String>newHashMap()),
+            new TokenFilterFactory[]{ queryTokenFilterFactory });
+
+      reloader = new SearcherAwareReloader(null);
    }
    
    /**
     * Test for {@link SearcherAwareReloader#newSearcher(SolrIndexSearcher, SolrIndexSearcher)}.
     */
    @Test
-   public void newSearcher() throws Exception {
-      SearcherAwareReloader reloader = new SearcherAwareReloader(null);
-      
+   public void newSearcher_differentAnalyzers() throws Exception {
+      when(fieldType.getIndexAnalyzer()).thenReturn(indexAnalyzer);
+      when(fieldType.getQueryAnalyzer()).thenReturn(queryAnalyzer);
+
       reloader.newSearcher(searcher, currentSearcher);
-      
-      verify(tokenFilterFactory).inform(searcher);
+
+      // Inform twice if index and query analyzer not the same.
+      verify(indexTokenFilterFactory, times(1)).inform(searcher);
+      verify(queryTokenFilterFactory, times(1)).inform(searcher);
    }
-   
+
+   /**
+    * Test for {@link SearcherAwareReloader#newSearcher(SolrIndexSearcher, SolrIndexSearcher)}.
+    */
+   @Test
+   public void newSearcher_sameAnalyzer() throws Exception {
+      when(fieldType.getIndexAnalyzer()).thenReturn(indexAnalyzer);
+      when(fieldType.getQueryAnalyzer()).thenReturn(indexAnalyzer);
+
+      reloader.newSearcher(searcher, currentSearcher);
+
+      // Do not inform twice if index and query analyzer are the same.
+      verify(indexTokenFilterFactory, times(1)).inform(searcher);
+      verify(queryTokenFilterFactory, never()).inform(searcher);
+   }
+
+   /**
+    * Test for {@link SearcherAwareReloader#newSearcher(SolrIndexSearcher, SolrIndexSearcher)}.
+    */
+   @Test
+   public void newSearcher_simpleAnalyzer() throws Exception {
+      when(fieldType.getIndexAnalyzer()).thenReturn(simpleAnalyzer);
+      when(fieldType.getQueryAnalyzer()).thenReturn(simpleAnalyzer);
+
+      reloader.newSearcher(searcher, currentSearcher);
+
+      // Only inform if analyzers is instance of TokenizerChain.
+      verify(indexTokenFilterFactory, never()).inform(searcher);
+      verify(queryTokenFilterFactory, never()).inform(searcher);
+   }
+
    /**
     * Dummy {@link SearcherAware} token filter factory for testing.
     */

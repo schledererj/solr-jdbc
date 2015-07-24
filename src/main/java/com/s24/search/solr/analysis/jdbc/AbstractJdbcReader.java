@@ -19,7 +19,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 
 /**
- * A configurable {@linkplain JdbcReader} that executes a given SQL statement on a configured JNDI data source.
+ * A configurable {@linkplain JdbcReader} that executes a given SQL statement on a configured data source.
  *
  * @author Shopping24 GmbH, Torsten Bøgh Köster (@tboeghk)
  */

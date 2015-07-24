@@ -1,7 +1,7 @@
 package com.s24.search.solr.analysis.jdbc;
 
 /**
- * Additional Parameters for configuring JDBC based filters.
+ * Additional Parameters for configuring JDBC based readers.
  * 
  * @author Shopping24 GmbH, Torsten Bøgh Köster (@tboeghk)
  */

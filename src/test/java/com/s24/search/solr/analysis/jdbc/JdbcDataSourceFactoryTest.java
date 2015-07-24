@@ -6,24 +6,19 @@ import static org.junit.Assert.assertTrue;
 import javax.sql.DataSource;
 
 import org.apache.solr.common.util.NamedList;
-import org.apache.solr.core.SolrCore;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.Test;
-import org.mockito.Mock;
 
 /**
  * Test for {@link JdbcDataSourceFactory}.
  */
 public class JdbcDataSourceFactoryTest {
-   @Mock
-   private SolrCore core;
-
    /**
     * Test for {@link JdbcDataSourceFactory#init(NamedList)}.
     */
    @Test
    public void init() {
-      JdbcDataSourceFactory factory = new JdbcDataSourceFactory(core);
+      JdbcDataSourceFactory factory = new JdbcDataSourceFactory();
 
       NamedList<Object> args = new NamedList<>();
       args.add("name", "test");

@@ -36,7 +36,7 @@ public class JdbcReaderFactoryTest {
       poolParams.add("url", "jdbc:h2:mem:testdb");
       poolParams.add("user", "sa");
       poolParams.add("password", "");
-      new JdbcDataSourceFactory(null).init(params);
+      new JdbcDataSourceFactory().init(params);
 
       // Configure JdbcReaderFactory.
       Map<String, String> args = new HashMap<>();

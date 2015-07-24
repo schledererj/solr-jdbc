@@ -7,29 +7,39 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.beanutils.PropertyUtilsBean;
+import org.apache.commons.beanutils.BeanUtilsBean;
+import org.apache.commons.beanutils.BeanUtilsBean2;
 import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.common.util.NamedList;
-import org.apache.solr.core.AbstractSolrEventListener;
-import org.apache.solr.core.SolrCore;
+import org.apache.solr.request.SolrQueryRequest;
+import org.apache.solr.response.transform.DocTransformer;
+import org.apache.solr.response.transform.TransformerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Dummy event listener which just creates a data source upon {@link #init(NamedList)}.
  */
 @SuppressWarnings("unused") // API
-public class JdbcDataSourceFactory extends AbstractSolrEventListener {
+public class JdbcDataSourceFactory extends TransformerFactory {
+   /**
+    * Logger.
+    */
+   private static final Logger log = LoggerFactory.getLogger(JdbcDataSourceFactory.class);
+
    /**
     * All data sources by name.
     */
    private static final Map<String, DataSource> dataSources = new ConcurrentHashMap<>();
 
    /**
-    * Constructor.
-    *
-    * @param core Core.
+    * Reflection helper.
     */
-   public JdbcDataSourceFactory(SolrCore core) {
-      super(core);
+   private final BeanUtilsBean utils = new BeanUtilsBean2();
+
+   @Override
+   public DocTransformer create(String field, SolrParams params, SolrQueryRequest req) {
+      throw new UnsupportedOperationException(getClass().getSimpleName() + " just creates a data source.");
    }
 
    /**
@@ -43,14 +53,20 @@ public class JdbcDataSourceFactory extends AbstractSolrEventListener {
 
    @Override
    public void init(NamedList args) {
-      SolrParams params = SolrParams.toSolrParams(args);
+      log.info("Registering data source {}.", args);
 
+      SolrParams params = SolrParams.toSolrParams(args);
       String name = params.get("name");
       String poolClassName = params.get("class");
       NamedList<?> poolParams = (NamedList<?>) args.get("params");
       // Ignore errors regarding the database connection pool?
       boolean ignore = params.getBool("ignore", true);
-      dataSources.computeIfAbsent(name, poolName -> createDataSource(poolClassName, poolParams, ignore));
+
+      // Blocks other threads that are trying to create a data source with the same name.
+      DataSource dataSource =
+            dataSources.computeIfAbsent(name, poolName -> createDataSource(poolClassName, poolParams, ignore));
+
+      log.info("Registered data source {}.", dataSource);
    }
 
    /**
@@ -74,21 +90,20 @@ public class JdbcDataSourceFactory extends AbstractSolrEventListener {
          if (ignore) {
             return null;
          }
-         throw new IllegalArgumentException("Failed to instantiate database connection pool.");
+         throw new IllegalArgumentException("Failed to instantiate database connection pool.", e);
       }
 
       for (Entry<String, ?> entry : poolParams) {
          try {
-            PropertyUtilsBean utils = new PropertyUtilsBean();
             utils.setProperty(pool, entry.getKey(), entry.getValue());
 
-         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+         } catch (InvocationTargetException | IllegalAccessException e) {
             log.error("Failed to configure database connection pool {}#{}: {}.",
                   poolClassName, entry.getKey(), e.getMessage());
             if (ignore) {
                return null;
             }
-            throw new IllegalArgumentException("Failed to configure database connection pool.");
+            throw new IllegalArgumentException("Failed to configure database connection pool.", e);
          }
       }
 

@@ -7,6 +7,7 @@ import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -16,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 /**
@@ -56,6 +58,23 @@ public abstract class AbstractJdbcReader implements JdbcReader {
    };
 
    /**
+    * Set the synonyms file to a fixed name.
+    * This is needed because our patched resource loader should load the synonyms exactly once.
+    *
+    * @param args
+    *           Configuration.
+    * @param originalParamName
+    *           Default synonym file name.
+    */
+   protected static void addSynonymFile(Map<String, String> args, String originalParamName) {
+      Preconditions.checkNotNull(args);
+
+      // Set a fixed synonyms "file".
+      // This "file" will be loaded from the database by the JdbcResourceLoader.
+      args.put(originalParamName, JdbcResourceLoader.DATABASE);
+   }
+
+   /**
     * Constructor.
     * Concrete constructors of sub classes should invoke {@link #checkDatasource()}.
     *
@@ -75,7 +94,7 @@ public abstract class AbstractJdbcReader implements JdbcReader {
    protected final void checkDatasource() {
       // Check database connection information of data source
       if (dataSource != null) {
-         //noinspection unused
+         //noinspection unused,EmptyTryBlock
          try (Connection connection = dataSource.getConnection()) {
             // Just get the connection to check if data source parameters are configured correctly.
          } catch (SQLException e) {

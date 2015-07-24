@@ -39,15 +39,12 @@ public class JndiJdbcReader extends AbstractJdbcReader {
     *           Configuration.
     * @param originalParamName
     *           Default synonym file name.
-    * @return Configuration.
+    * @return JdbcReader.
     */
    @SuppressWarnings("unused") // API
    public static JndiJdbcReader createFromSolrParams(Map<String, String> args, String originalParamName) {
       Preconditions.checkNotNull(args);
-
-      // Set a fixed synonyms "file".
-      // This "file" will be loaded from the database by the JdbcResourceLoader.
-      args.put(originalParamName, JdbcResourceLoader.DATABASE);
+      addSynonymFile(args, originalParamName);
 
       String name = args.remove(JdbcParams.JNDI_NAME.toString());
       String sql = args.remove(JdbcParams.SQL.toString());

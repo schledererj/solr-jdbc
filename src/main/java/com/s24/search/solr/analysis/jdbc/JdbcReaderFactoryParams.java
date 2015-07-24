@@ -5,8 +5,14 @@ package com.s24.search.solr.analysis.jdbc;
  * 
  * @author Shopping24 GmbH, Torsten Bøgh Köster (@tboeghk)
  */
-public enum JdbcParams {
+public enum JdbcReaderFactoryParams {
 
+   /**
+    * Parameter: Name of data source in {@link JdbcDataSourceFactory}.
+    */
+   DATASOURCE("dataSource"),
+
+   /**
    /**
     * Parameter: JNDI name of data source.
     */
@@ -32,7 +38,7 @@ public enum JdbcParams {
     *
     * @param name Name of the parameter.
     */
-   JdbcParams(String name) {
+   JdbcReaderFactoryParams(String name) {
       this.name = name;
    }
 

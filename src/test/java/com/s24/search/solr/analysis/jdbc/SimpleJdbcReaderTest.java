@@ -18,9 +18,9 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 
 /**
- * Test for {@link JndiJdbcReader}.
+ * Test for {@link SimpleJdbcReader}.
  */
-public class JndiJdbcReaderTest {
+public class SimpleJdbcReaderTest {
    /**
     * Embedded database.
     * Implements {@link DataSource}.
@@ -44,11 +44,11 @@ public class JndiJdbcReaderTest {
    }
 
    /**
-    * Test for {@link JndiJdbcReader#getReader()}.
+    * Test for {@link SimpleJdbcReader#getReader()}.
     */
    @Test
    public void getReader() throws Exception {
-      Reader reader = new JndiJdbcReader("dataSource", "select synonyms from synonyms", false).getReader();
+      Reader reader = new SimpleJdbcReader(database, "select synonyms from synonyms", false).getReader();
       StringWriter synonyms = new StringWriter();
       IOUtils.copy(reader, synonyms);
 
@@ -56,12 +56,12 @@ public class JndiJdbcReaderTest {
    }
 
    /**
-    * Test for {@link JndiJdbcReader#JndiJdbcReader(String, String, boolean)}.
+    * Test for {@link SimpleJdbcReader#SimpleJdbcReader(DataSource, String, boolean)}.
     */
    @Test
    public void ignore() {
       // Missing data source will be ignored
-      new JndiJdbcReader("dataSource", "sql", true);
+      new SimpleJdbcReader(null, "sql", true);
    }
 
    @After

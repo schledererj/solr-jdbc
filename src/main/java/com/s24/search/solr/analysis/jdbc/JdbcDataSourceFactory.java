@@ -21,7 +21,7 @@ public class JdbcDataSourceFactory extends AbstractSolrEventListener {
    /**
     * All data sources by name.
     */
-   private static final Map<String, DataSource> datasources = new ConcurrentHashMap<>();
+   private static final Map<String, DataSource> dataSources = new ConcurrentHashMap<>();
 
    /**
     * Constructor.
@@ -38,7 +38,7 @@ public class JdbcDataSourceFactory extends AbstractSolrEventListener {
     * @param name Name of database connection pool.
     */
    public static DataSource lookUp(String name) {
-      return datasources.get(name);
+      return dataSources.get(name);
    }
 
    @Override
@@ -50,7 +50,7 @@ public class JdbcDataSourceFactory extends AbstractSolrEventListener {
       NamedList<?> poolParams = (NamedList<?>) args.get("params");
       // Ignore errors regarding the database connection pool?
       boolean ignore = params.getBool("ignore", true);
-      datasources.computeIfAbsent(name, poolName -> createDataSource(poolClassName, poolParams, ignore));
+      dataSources.computeIfAbsent(name, poolName -> createDataSource(poolClassName, poolParams, ignore));
    }
 
    /**

@@ -48,6 +48,7 @@
 
    <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <commons-beanutils.version>1.9.2</commons-beanutils.version>
       <commons-dbutils.version>1.6</commons-dbutils.version>
       <commons-io.version>2.4</commons-io.version>
       <!-- Due to solr guava currently has to stick at 14.x -->
@@ -151,6 +152,11 @@
          <groupId>commons-dbutils</groupId>
          <artifactId>commons-dbutils</artifactId>
          <version>${commons-dbutils.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>commons-beanutils</groupId>
+         <artifactId>commons-beanutils</artifactId>
+         <version>${commons-beanutils.version}</version>
       </dependency>
 
       <dependency>

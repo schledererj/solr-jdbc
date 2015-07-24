@@ -46,7 +46,7 @@ public class SearcherAwareReloader extends AbstractSolrEventListener {
          
          inform("field type", name, fieldType, searcher);
 
-         Analyzer indexAnalyzer = fieldType.getQueryAnalyzer();
+         Analyzer indexAnalyzer = fieldType.getIndexAnalyzer();
          Analyzer queryAnalyzer = fieldType.getQueryAnalyzer();
          if (indexAnalyzer instanceof TokenizerChain) {
             inform(name, (TokenizerChain) indexAnalyzer, searcher);

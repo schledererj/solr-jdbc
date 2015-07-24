@@ -5,7 +5,7 @@ package com.s24.search.solr.analysis.jdbc;
  * 
  * @author Shopping24 GmbH, Torsten Bøgh Köster (@tboeghk)
  */
-public enum JdbcFilterFactoryParams {
+public enum JdbcParams {
 
    /**
     * Parameter: JNDI name of data source.
@@ -32,7 +32,7 @@ public enum JdbcFilterFactoryParams {
     *
     * @param name Name of the parameter.
     */
-   JdbcFilterFactoryParams(String name) {
+   JdbcParams(String name) {
       this.name = name;
    }
 

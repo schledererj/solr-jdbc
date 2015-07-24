@@ -49,9 +49,9 @@ public class JndiJdbcReader extends AbstractJdbcReader {
       // This "file" will be loaded from the database by the JdbcResourceLoader.
       args.put(originalParamName, JdbcResourceLoader.DATABASE);
 
-      String name = args.remove(JdbcFilterFactoryParams.JNDI_NAME.toString());
-      String sql = args.remove(JdbcFilterFactoryParams.SQL.toString());
-      String ignore = args.remove(JdbcFilterFactoryParams.IGNORE.toString());
+      String name = args.remove(JdbcParams.JNDI_NAME.toString());
+      String sql = args.remove(JdbcParams.SQL.toString());
+      String ignore = args.remove(JdbcParams.IGNORE.toString());
       return new JndiJdbcReader(name, sql, "true".equals(ignore));
    }
 

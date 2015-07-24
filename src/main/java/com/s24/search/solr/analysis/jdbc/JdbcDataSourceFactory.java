@@ -53,10 +53,9 @@ public class JdbcDataSourceFactory extends TransformerFactory {
 
    @Override
    public void init(NamedList args) {
-      log.info("Registering data source {}.", args);
-
       SolrParams params = SolrParams.toSolrParams(args);
       String name = params.get("name");
+      log.info("Registering data source {}.", name);
       String poolClassName = params.get("class");
       NamedList<?> poolParams = (NamedList<?>) args.get("params");
       // Ignore errors regarding the database connection pool?
@@ -66,7 +65,9 @@ public class JdbcDataSourceFactory extends TransformerFactory {
       DataSource dataSource =
             dataSources.computeIfAbsent(name, poolName -> createDataSource(poolClassName, poolParams, ignore));
 
-      log.info("Registered data source {}.", dataSource);
+      if (dataSource != null) {
+         log.info("Successfully registered data source {}.", name);
+      }
    }
 
    /**

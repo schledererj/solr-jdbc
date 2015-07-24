@@ -6,17 +6,10 @@ package com.s24.search.solr.analysis.jdbc;
  * @author Shopping24 GmbH, Torsten Bøgh Köster (@tboeghk)
  */
 public enum JdbcReaderFactoryParams {
-
    /**
-    * Parameter: Name of data source in {@link JdbcDataSourceFactory}.
+    * Parameter: Name of data source in {@link JdbcDataSourceFactory} or in JNDI.
     */
    DATASOURCE("dataSource"),
-
-   /**
-   /**
-    * Parameter: JNDI name of data source.
-    */
-   JNDI_NAME("jndiName"),
 
    /**
     * Parameter: SQL to load synonyms.
@@ -46,5 +39,4 @@ public enum JdbcReaderFactoryParams {
    public String toString() {
       return name;
    }
-
 }

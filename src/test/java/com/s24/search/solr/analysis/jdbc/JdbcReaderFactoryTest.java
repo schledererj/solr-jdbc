@@ -57,7 +57,7 @@ public class JdbcReaderFactoryTest {
 
       // Configure JdbcReaderFactory.
       Map<String, String> args = new HashMap<>();
-      args.put(JdbcReaderFactoryParams.JNDI_NAME.toString(), "dataSource");
+      args.put(JdbcReaderFactoryParams.DATASOURCE.toString(), "dataSource");
       args.put(JdbcReaderFactoryParams.SQL.toString(), "sql");
       args.put(JdbcReaderFactoryParams.IGNORE.toString(), "false");
 

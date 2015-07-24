@@ -48,39 +48,28 @@ public class JdbcReaderFactory {
       boolean ignore = !"false".equals(ignoreString);
 
       String dataSourceName = args.remove(JdbcReaderFactoryParams.DATASOURCE.toString());
-      String jndiName = args.remove(JdbcReaderFactoryParams.JNDI_NAME.toString());
 
       DataSource dataSource = null;
       if (dataSourceName != null) {
-         dataSource = solrDataSource(dataSourceName);
-      } else if (jndiName != null) {
-         dataSource = jndiDataSource(fixJndiName(jndiName));
+         dataSource = JdbcDataSourceFactory.lookUp(dataSourceName);
+         if (dataSource == null) {
+            dataSource = jndiDataSource(fixJndiName(dataSourceName));
+         }
+
+         if (dataSource == null) {
+            log.error("Data source {} not found.", dataSourceName);
+            if (!ignore) {
+               throw new IllegalArgumentException("No data source found.");
+            }
+         }
       } else {
          log.error("No data source configured.");
-      }
-
-      if (dataSource == null) {
          if (!ignore) {
-            throw new IllegalArgumentException("No data source found.");
+            throw new IllegalArgumentException("No data source configured.");
          }
       }
 
       return new SimpleJdbcReader(dataSource, sql, ignore);
-   }
-
-   /**
-    * Look up data source via {@link JdbcDataSourceFactory}.
-    *
-    * @param dataSourceName Name of data source.
-    */
-   private static DataSource solrDataSource(String dataSourceName) {
-      DataSource dataSource = JdbcDataSourceFactory.lookUp(dataSourceName);
-      if (dataSource == null) {
-         log.error("Data source {} not found.", dataSourceName);
-         return null;
-      }
-
-      return dataSource;
    }
 
    /**
@@ -107,7 +96,6 @@ public class JdbcReaderFactory {
          return dataSource;
 
       } catch (NameNotFoundException e) {
-         log.error("Data source {} not found: {}.", jndiName, e.getMessage());
          return null;
 
       } catch (NamingException e) {

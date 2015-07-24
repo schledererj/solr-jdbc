@@ -22,9 +22,17 @@ public enum JdbcFilterFactoryParams {
     */
    IGNORE("ignoreMissingDatabase");
 
+   /**
+    * Name of this parameter.
+    */
    private final String name;
 
-   private JdbcFilterFactoryParams(String name) {
+   /**
+    * Constructor.
+    *
+    * @param name Name of the parameter.
+    */
+   JdbcFilterFactoryParams(String name) {
       this.name = name;
    }
 

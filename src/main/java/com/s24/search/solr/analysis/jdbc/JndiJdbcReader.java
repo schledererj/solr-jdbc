@@ -5,7 +5,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.io.Reader;
 import java.io.StringReader;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -59,15 +58,12 @@ public class JndiJdbcReader implements JdbcReader {
    /**
     * Default single line {@link ResultSetHandler}.
     */
-   private final static ResultSetHandler<List<String>> SINGLE_LINE_RESULT_SET_HANDLER = new ResultSetHandler<List<String>>() {
-      @Override
-      public List<String> handle(ResultSet rs) throws SQLException {
-         List<String> result = Lists.newArrayList();
-         while (rs.next()) {
-            result.add(rs.getString(1));
-         }
-         return result;
+   private final static ResultSetHandler<List<String>> SINGLE_LINE_RESULT_SET_HANDLER = rs -> {
+      List<String> result = Lists.newArrayList();
+      while (rs.next()) {
+         result.add(rs.getString(1));
       }
+      return result;
    };
 
 
@@ -147,6 +143,7 @@ public class JndiJdbcReader implements JdbcReader {
 
       // Check database connection information of data source
       if (dataSource != null) {
+         //noinspection unused
          try (Connection connection = dataSource.getConnection()) {
             // Just get the connection to check if data source parameters are configured correctly.
          } catch (SQLException e) {

@@ -11,7 +11,6 @@ import org.apache.commons.dbutils.QueryRunner;
  */
 public interface JdbcReader {
    /**
-    *
     * @return a {@linkplain Reader}, never <code>null</code>
     */
    Reader getReader();

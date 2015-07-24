@@ -50,7 +50,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <commons-dbutils.version>1.6</commons-dbutils.version>
         <commons-io.version>2.4</commons-io.version>
-        <guava.version>18.0</guava.version>
+        <!-- Due to solr guava currently has to stick at 14.x -->
+        <guava.version>14.0.1</guava.version>
         <h2.version>1.4.187</h2.version>
         <junit.version>4.12</junit.version>
         <mockito.version>1.10.19</mockito.version>

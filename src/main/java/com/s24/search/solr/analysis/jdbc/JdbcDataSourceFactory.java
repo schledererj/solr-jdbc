@@ -56,25 +56,10 @@ public class JdbcDataSourceFactory extends FieldType {
       return dataSources.get(name);
    }
 
-   public JdbcDataSourceFactory() {
-      log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      log.info("Constructing data source.");
-   }
-
    @Override
    protected void setArgs(IndexSchema schema, Map<String, String> args) {
-      log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-
       String name = args.remove(JdbcReaderFactoryParams.DATASOURCE.toString());
-      log.info("Registering data source {}.", name);
+      log.info("Registering data source {} for schema {}.", name, schema.getSchemaName());
       // Ignore errors regarding the database connection pool?
       boolean ignore = !"false".equals(args.remove(JdbcReaderFactoryParams.IGNORE.toString()));
 
@@ -83,7 +68,7 @@ public class JdbcDataSourceFactory extends FieldType {
             dataSources.computeIfAbsent(name, poolName -> createDataSource(args, ignore));
 
       if (dataSource != null) {
-         log.info("Successfully registered data source {}.", name);
+         log.info("Successfully registered data source {} for schema {}.", name, schema.getSchemaName());
       }
    }
 

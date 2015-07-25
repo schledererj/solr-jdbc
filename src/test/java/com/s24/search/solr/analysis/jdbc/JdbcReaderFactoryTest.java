@@ -7,10 +7,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.BasicConfigurator;
-import org.apache.solr.common.util.NamedList;
+import org.apache.solr.schema.IndexSchema;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.mock.jndi.SimpleNamingContextBuilder;
@@ -18,7 +21,11 @@ import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 /**
  * Test for {@link JdbcReaderFactory}.
  */
+@RunWith(MockitoJUnitRunner.class)
 public class JdbcReaderFactoryTest {
+   @Mock
+   private IndexSchema indexSchema;
+
    @Before
    public void setUp() throws Exception {
       BasicConfigurator.resetConfiguration();
@@ -28,15 +35,13 @@ public class JdbcReaderFactoryTest {
    @Test
    public void createFromSolrParams_solr() {
       // Configure data source via JdbcDataSourceFactory.
-      NamedList<Object> params = new NamedList<>();
-      params.add("name", "dataSource");
-      params.add("class", JdbcDataSource.class.getName());
-      NamedList<Object> poolParams = new NamedList<>();
-      params.add("params", poolParams);
-      poolParams.add("url", "jdbc:h2:mem:testdb");
-      poolParams.add("user", "sa");
-      poolParams.add("password", "");
-      new JdbcDataSourceFactory().init(params);
+      Map<String, String> poolArgs = new HashMap<>();
+      poolArgs.put("dataSource", "dataSource");
+      poolArgs.put("poolClassName", JdbcDataSource.class.getName());
+      poolArgs.put("poolUrl", "jdbc:h2:mem:testdb");
+      poolArgs.put("poolUser", "sa");
+      poolArgs.put("poolPassword", "");
+      new JdbcDataSourceFactory().init(indexSchema, poolArgs);
 
       // Configure JdbcReaderFactory.
       Map<String, String> args = new HashMap<>();

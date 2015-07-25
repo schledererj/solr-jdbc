@@ -62,7 +62,7 @@ public class JdbcReaderFactory {
                throw new IllegalArgumentException("No data source found.");
             }
          }
-      } else {
+         } else {
          log.error("No data source configured.");
          if (!ignore) {
             throw new IllegalArgumentException("No data source configured.");

@@ -41,7 +41,7 @@ public class JdbcReaderFactoryTest {
       poolArgs.put("poolUrl", "jdbc:h2:mem:testdb");
       poolArgs.put("poolUser", "sa");
       poolArgs.put("poolPassword", "");
-      new JdbcDataSourceFactory().init(indexSchema, poolArgs);
+      new JdbcDataSourceFactory().setArgs(indexSchema, poolArgs);
 
       // Configure JdbcReaderFactory.
       Map<String, String> args = new HashMap<>();

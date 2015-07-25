@@ -37,7 +37,7 @@ public class JdbcDataSourceFactoryTest {
       poolArgs.put("poolUser", "user");
       poolArgs.put("poolPassword", "password");
       poolArgs.put("poolLoginTimeout", "100");
-      factory.init(indexSchema, poolArgs);
+      factory.setArgs(indexSchema, poolArgs);
 
       DataSource dataSource = JdbcDataSourceFactory.lookUp("test");
       assertTrue(dataSource instanceof JdbcDataSource);

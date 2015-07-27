@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.annotations.VisibleForTesting;
 
 /**
- * {@link HttpShardHandlerFactory} which additionally creates custom beans.
+ * {@link HttpShardHandlerFactory} which additionally creates global unique custom beans.
  *
  * Definition of beans in solr.xml:
  *
@@ -36,7 +36,7 @@ import com.google.common.annotations.VisibleForTesting;
  *    &lt;/shardHandlerFactory>
  * </pre>
  *
- * The defined beans can be retrieved via {@link ConfiguringHttShardHandlerFactory#lookUp(String)} from plugins.
+ * The defined beans can be retrieved via {@link ConfiguringHttShardHandlerFactory#lookUp(String, Class)} from plugins.
  */
 @SuppressWarnings("unused") // API
 public class ConfiguringHttShardHandlerFactory extends HttpShardHandlerFactory {
@@ -68,15 +68,17 @@ public class ConfiguringHttShardHandlerFactory extends HttpShardHandlerFactory {
     * Look up bean by name.
     *
     * @param beanName Global unique bean name.
+    * @param expectedClass Expected bean class.
     */
    public static <B> B lookUp(String beanName, Class<B> expectedClass) {
       Object bean = beans.get(beanName);
       if (bean == null) {
+         log.info("Bean {} not found.", beanName);
          return null;
       }
 
       if (!expectedClass.isInstance(bean)) {
-         log.error("Bean {} is not a {}, but a {}.", beanName, expectedClass, beans.getClass());
+         log.error("Bean {} is not a {} but a {}.", beanName, expectedClass, beans.getClass());
       }
 
 

@@ -1,11 +1,15 @@
-package com.s24.search.solr.analysis.jdbc;
+package com.s24.search.solr;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.sql.DataSource;
 
 import org.apache.solr.common.util.NamedList;
+import org.apache.solr.core.PluginInfo;
 import org.apache.solr.schema.IndexSchema;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.After;
@@ -16,38 +20,40 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 /**
- * Test for {@link JdbcDataSourceFactory}.
+ * Test for {@link ConfiguringHttShardHandlerFactory}.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class JdbcDataSourceFactoryTest {
+public class ConfiguringHttShardHandlerFactoryTest {
    @Mock
    private IndexSchema indexSchema;
 
    @Before
    @After
    public void cleanUp() {
-      JdbcDataSourceFactory.clear();
+      ConfiguringHttShardHandlerFactory.clear();
    }
 
    /**
-    * Test for {@link JdbcDataSourceFactory#init(NamedList)}.
+    * Test for {@link ConfiguringHttShardHandlerFactory#init(PluginInfo)}.
     */
    @Test
    public void init() {
-      JdbcDataSourceFactory factory = new JdbcDataSourceFactory(null);
-
-      NamedList<Object> poolDefinition = new NamedList<>();
-      poolDefinition.add("dataSource", "dataSource");
-      poolDefinition.add("class", JdbcDataSource.class.getName());
       NamedList<Object> poolConfig = new NamedList<>();
+      poolConfig.add("class", JdbcDataSource.class.getName());
       poolConfig.add("url", "url");
       poolConfig.add("user", "user");
       poolConfig.add("password", "password");
       poolConfig.add("loginTimeout", 100);
-      poolDefinition.add("params", poolConfig);
-      factory.init(poolDefinition);
 
-      DataSource dataSource = JdbcDataSourceFactory.lookUp("dataSource");
+      Map<String, Object> shardHandlerConfig = new HashMap<>();
+      NamedList<Object> beans = new NamedList<>();
+      beans.add("dataSource", poolConfig);
+      shardHandlerConfig.put("beans", beans);
+      PluginInfo info = new PluginInfo("shardHandler", shardHandlerConfig);
+      ConfiguringHttShardHandlerFactory factory = new ConfiguringHttShardHandlerFactory();
+      factory.init(info);
+
+      DataSource dataSource = (DataSource) ConfiguringHttShardHandlerFactory.lookUp("dataSource");
       assertTrue(dataSource instanceof JdbcDataSource);
       JdbcDataSource jdbcDataSource = (JdbcDataSource) dataSource;
       assertEquals("url", jdbcDataSource.getUrl());

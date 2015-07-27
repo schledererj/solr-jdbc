@@ -1,5 +1,7 @@
 package com.s24.search.solr.analysis.jdbc;
 
+import com.s24.search.solr.ConfiguringHttShardHandlerFactory;
+
 /**
  * Additional Parameters for configuring JDBC based readers.
  * 
@@ -7,7 +9,7 @@ package com.s24.search.solr.analysis.jdbc;
  */
 public interface JdbcReaderFactoryParams {
    /**
-    * Parameter: Name of data source in {@link JdbcDataSourceFactory} or in JNDI.
+    * Parameter: Name of data source in {@link ConfiguringHttShardHandlerFactory} or in JNDI.
     */
    String DATASOURCE = "dataSource";
 
@@ -20,9 +22,4 @@ public interface JdbcReaderFactoryParams {
     * Parameter: Ignore a missing database?.
     */
    String IGNORE = "ignoreMissingDatabase";
-
-   /**
-    * Parameter prefix: Prefix for data source specific parameters.
-    */
-   String POOL = "pool";
 }

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.solr.common.util.NamedList;
+import org.apache.solr.core.PluginInfo;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.After;
 import org.junit.Before;
@@ -17,6 +18,8 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 
+import com.s24.search.solr.ConfiguringHttShardHandlerFactory;
+
 /**
  * Test for {@link JdbcReaderFactory}.
  */
@@ -25,7 +28,7 @@ public class JdbcReaderFactoryTest {
    @Before
    @After
    public void cleanUp() {
-      JdbcDataSourceFactory.clear();
+      ConfiguringHttShardHandlerFactory.clear();
    }
 
    /**
@@ -34,15 +37,19 @@ public class JdbcReaderFactoryTest {
    @Test
    public void createFromSolrParams_solr() {
       // Configure data source via JdbcDataSourceFactory.
-      NamedList<Object> poolDefinition = new NamedList<>();
-      poolDefinition.add("dataSource", "dataSource");
-      poolDefinition.add("class", JdbcDataSource.class.getName());
       NamedList<Object> poolConfig = new NamedList<>();
+      poolConfig.add("class", JdbcDataSource.class.getName());
       poolConfig.add("url", "jdbc:h2:mem:testdb");
       poolConfig.add("user", "sa");
       poolConfig.add("password", "");
-      poolDefinition.add("params", poolConfig);
-      new JdbcDataSourceFactory(null).init(poolDefinition);
+
+      Map<String, Object> shardHandlerConfig = new HashMap<>();
+      NamedList<Object> pools = new NamedList<>();
+      pools.add("dataSource", poolConfig);
+      shardHandlerConfig.put("pools", pools);
+      PluginInfo info = new PluginInfo("shardHandler", shardHandlerConfig);
+      ConfiguringHttShardHandlerFactory factory = new ConfiguringHttShardHandlerFactory();
+      factory.init(info);
 
       // Configure JdbcReaderFactory.
       Map<String, String> readerDefinition = new HashMap<>();

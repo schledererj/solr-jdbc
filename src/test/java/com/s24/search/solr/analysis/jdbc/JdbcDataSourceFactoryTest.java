@@ -3,13 +3,13 @@ package com.s24.search.solr.analysis.jdbc;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.sql.DataSource;
 
+import org.apache.solr.common.util.NamedList;
 import org.apache.solr.schema.IndexSchema;
 import org.h2.jdbcx.JdbcDataSource;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -23,23 +23,31 @@ public class JdbcDataSourceFactoryTest {
    @Mock
    private IndexSchema indexSchema;
 
+   @Before
+   @After
+   public void cleanUp() {
+      JdbcDataSourceFactory.clear();
+   }
+
    /**
-    * Test for {@link JdbcDataSourceFactory#init(IndexSchema, Map)}.
+    * Test for {@link JdbcDataSourceFactory#init(NamedList)}.
     */
    @Test
    public void init() {
-      JdbcDataSourceFactory factory = new JdbcDataSourceFactory();
+      JdbcDataSourceFactory factory = new JdbcDataSourceFactory(null);
 
-      Map<String, String> poolArgs = new HashMap<>();
-      poolArgs.put("dataSource", "test");
-      poolArgs.put("poolClassName", JdbcDataSource.class.getName());
-      poolArgs.put("poolUrl", "url");
-      poolArgs.put("poolUser", "user");
-      poolArgs.put("poolPassword", "password");
-      poolArgs.put("poolLoginTimeout", "100");
-      factory.setArgs(indexSchema, poolArgs);
+      NamedList<Object> poolDefinition = new NamedList<>();
+      poolDefinition.add("dataSource", "dataSource");
+      poolDefinition.add("class", JdbcDataSource.class.getName());
+      NamedList<Object> poolConfig = new NamedList<>();
+      poolConfig.add("url", "url");
+      poolConfig.add("user", "user");
+      poolConfig.add("password", "password");
+      poolConfig.add("loginTimeout", 100);
+      poolDefinition.add("params", poolConfig);
+      factory.init(poolDefinition);
 
-      DataSource dataSource = JdbcDataSourceFactory.lookUp("test");
+      DataSource dataSource = JdbcDataSourceFactory.lookUp("dataSource");
       assertTrue(dataSource instanceof JdbcDataSource);
       JdbcDataSource jdbcDataSource = (JdbcDataSource) dataSource;
       assertEquals("url", jdbcDataSource.getUrl());

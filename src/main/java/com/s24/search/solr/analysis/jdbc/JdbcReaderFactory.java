@@ -24,31 +24,32 @@ public class JdbcReaderFactory {
    private static final Logger log = LoggerFactory.getLogger(JdbcReaderFactory.class);
 
    /**
-    * Create the {@link JdbcReader}.
+    * Create the {@link JdbcReader} from configuration.
     *
     * Set synonyms file to a fixed name.
     * This is needed because our patched resource loader should load the synonyms exactly once.
     *
-    * @param args
+    * @param config
     *           Configuration.
     * @param originalParamName
     *           Default synonym file name.
     * @return JdbcReader.
     */
    @SuppressWarnings("unused") // API
-   public static JdbcReader createFromSolrParams(Map<String, String> args, String originalParamName) {
-      Preconditions.checkNotNull(args);
+   public static JdbcReader createFromSolrParams(Map<String, String> config, String originalParamName) {
+      Preconditions.checkNotNull(config);
 
       // Set a fixed synonyms "file".
       // This "file" will be loaded from the database by the JdbcResourceLoader.
-      args.put(originalParamName, JdbcResourceLoader.DATABASE);
+      if (originalParamName != null) {
+         config.put(originalParamName, JdbcResourceLoader.DATABASE);
+      }
 
-      String sql = args.remove(JdbcReaderFactoryParams.SQL.toString());
-      String ignoreString = args.remove(JdbcReaderFactoryParams.IGNORE.toString());
+      String sql = config.remove(JdbcReaderFactoryParams.SQL);
+      String ignoreString = config.remove(JdbcReaderFactoryParams.IGNORE);
       boolean ignore = !"false".equals(ignoreString);
 
-      String dataSourceName = args.remove(JdbcReaderFactoryParams.DATASOURCE.toString());
-
+      String dataSourceName = config.remove(JdbcReaderFactoryParams.DATASOURCE);
       DataSource dataSource = null;
       if (dataSourceName != null) {
          dataSource = JdbcDataSourceFactory.lookUp(dataSourceName);

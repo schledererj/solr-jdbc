@@ -5,38 +5,24 @@ package com.s24.search.solr.analysis.jdbc;
  * 
  * @author Shopping24 GmbH, Torsten Bøgh Köster (@tboeghk)
  */
-public enum JdbcReaderFactoryParams {
+public interface JdbcReaderFactoryParams {
    /**
     * Parameter: Name of data source in {@link JdbcDataSourceFactory} or in JNDI.
     */
-   DATASOURCE("dataSource"),
+   String DATASOURCE = "dataSource";
 
    /**
     * Parameter: SQL to load synonyms.
     */
-   SQL("sql"),
+   String SQL = "sql";
 
    /**
     * Parameter: Ignore a missing database?.
     */
-   IGNORE("ignoreMissingDatabase");
+   String IGNORE = "ignoreMissingDatabase";
 
    /**
-    * Name of this parameter.
+    * Parameter prefix: Prefix for data source specific parameters.
     */
-   private final String name;
-
-   /**
-    * Constructor.
-    *
-    * @param name Name of the parameter.
-    */
-   JdbcReaderFactoryParams(String name) {
-      this.name = name;
-   }
-
-   @Override
-   public String toString() {
-      return name;
-   }
+   String POOL = "pool";
 }

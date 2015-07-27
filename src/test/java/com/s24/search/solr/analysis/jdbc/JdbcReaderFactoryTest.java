@@ -6,13 +6,12 @@ import static org.junit.Assert.assertNotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.solr.schema.IndexSchema;
+import org.apache.solr.common.util.NamedList;
 import org.h2.jdbcx.JdbcDataSource;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -23,50 +22,55 @@ import org.springframework.mock.jndi.SimpleNamingContextBuilder;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class JdbcReaderFactoryTest {
-   @Mock
-   private IndexSchema indexSchema;
-
    @Before
-   public void setUp() throws Exception {
-      BasicConfigurator.resetConfiguration();
-      BasicConfigurator.configure();
+   @After
+   public void cleanUp() {
+      JdbcDataSourceFactory.clear();
    }
 
+   /**
+    * Test for {@link JdbcReaderFactory#createFromSolrParams(Map, String)}.
+    */
    @Test
    public void createFromSolrParams_solr() {
       // Configure data source via JdbcDataSourceFactory.
-      Map<String, String> poolArgs = new HashMap<>();
-      poolArgs.put("dataSource", "dataSource");
-      poolArgs.put("poolClassName", JdbcDataSource.class.getName());
-      poolArgs.put("poolUrl", "jdbc:h2:mem:testdb");
-      poolArgs.put("poolUser", "sa");
-      poolArgs.put("poolPassword", "");
-      new JdbcDataSourceFactory().setArgs(indexSchema, poolArgs);
+      NamedList<Object> poolDefinition = new NamedList<>();
+      poolDefinition.add("dataSource", "dataSource");
+      poolDefinition.add("class", JdbcDataSource.class.getName());
+      NamedList<Object> poolConfig = new NamedList<>();
+      poolConfig.add("url", "jdbc:h2:mem:testdb");
+      poolConfig.add("user", "sa");
+      poolConfig.add("password", "");
+      poolDefinition.add("params", poolConfig);
+      new JdbcDataSourceFactory(null).init(poolDefinition);
 
       // Configure JdbcReaderFactory.
-      Map<String, String> args = new HashMap<>();
-      args.put(JdbcReaderFactoryParams.DATASOURCE.toString(), "dataSource");
-      args.put(JdbcReaderFactoryParams.SQL.toString(), "sql");
-      args.put(JdbcReaderFactoryParams.IGNORE.toString(), "false");
+      Map<String, String> readerDefinition = new HashMap<>();
+      readerDefinition.put(JdbcReaderFactoryParams.DATASOURCE, "dataSource");
+      readerDefinition.put(JdbcReaderFactoryParams.SQL, "sql");
+      readerDefinition.put(JdbcReaderFactoryParams.IGNORE, "false");
 
-      JdbcReader reader = JdbcReaderFactory.createFromSolrParams(args, "dummy");
+      JdbcReader reader = JdbcReaderFactory.createFromSolrParams(readerDefinition, "dummy");
       assertNotNull(reader);
       assertEquals("sql", reader.getSql());
    }
 
+   /**
+    * Test for {@link JdbcReaderFactory#createFromSolrParams(Map, String)}.
+    */
    @Test
-   public void createFromSolrParams_jndi() throws Exception {
+   public void createReader_jndi() throws Exception {
       // Register data source with JNDI.
       SimpleNamingContextBuilder builder = SimpleNamingContextBuilder.emptyActivatedContextBuilder();
       builder.bind("java:comp/env/dataSource", new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build());
 
       // Configure JdbcReaderFactory.
-      Map<String, String> args = new HashMap<>();
-      args.put(JdbcReaderFactoryParams.DATASOURCE.toString(), "dataSource");
-      args.put(JdbcReaderFactoryParams.SQL.toString(), "sql");
-      args.put(JdbcReaderFactoryParams.IGNORE.toString(), "false");
+      Map<String, String> readerDefinition = new HashMap<>();
+      readerDefinition.put(JdbcReaderFactoryParams.DATASOURCE, "dataSource");
+      readerDefinition.put(JdbcReaderFactoryParams.SQL, "sql");
+      readerDefinition.put(JdbcReaderFactoryParams.IGNORE, "false");
 
-      JdbcReader reader = JdbcReaderFactory.createFromSolrParams(args, "dummy");
+      JdbcReader reader = JdbcReaderFactory.createFromSolrParams(readerDefinition, "dummy");
       assertNotNull(reader);
       assertEquals("sql", reader.getSql());
    }

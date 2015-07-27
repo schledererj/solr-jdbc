@@ -1,6 +1,7 @@
 package com.s24.search.solr;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
@@ -105,7 +106,7 @@ public class ConfiguringHttShardHandlerFactory extends HttpShardHandlerFactory {
          for (Entry<String, ?> bean : beans) {
             String beanName = bean.getKey();
             NamedList<?> beanDefinition = (NamedList<?>) bean.getValue();
-            createBean(beanName, beanDefinition);
+            registerBean(beanName, beanDefinition);
          }
       }
 
@@ -113,34 +114,31 @@ public class ConfiguringHttShardHandlerFactory extends HttpShardHandlerFactory {
    }
 
    /**
-    * Create bean.
+    * Create, configure and register bean.
     *
     * @param beanName Global unique bean name.
     * @param beanDefinition Bean configuration.
     */
-   private void createBean(String beanName, NamedList<?> beanDefinition) {
+   private void registerBean(String beanName, NamedList<?> beanDefinition) {
       checkNotNull(beanDefinition);
 
       log.info("Registering bean {}.", beanName);
-      boolean ignore = !"false".equals(beanDefinition.remove("ignoreErrors"));
 
-      // Blocks other threads that are trying to create a data source with the same name.
-      Object bean =
-            beans.computeIfAbsent(beanName, name -> createBean(name, beanDefinition, ignore));
-
+      Object bean = createBean(beanName, beanDefinition);
       if (bean != null) {
+         Object removed = beans.put(beanName, bean);
+         checkState(removed == null, beanName + " has been defined twice.");
          log.info("Successfully registered bean {}.", beanName);
       }
    }
 
    /**
-    * Create bean.
+    * Create and configure bean.
     *
     * @param beanName Global unique bean name.
     * @param beanDefinition Bean configuration.
-    * @param ignore Ignore any errors?.
     */
-   private Object createBean(String beanName, NamedList<?> beanDefinition, boolean ignore) {
+   private Object createBean(String beanName, NamedList<?> beanDefinition) {
       String beanClassName = (String) beanDefinition.remove("class");
       Class<?> beanClass;
       Object bean;
@@ -151,9 +149,6 @@ public class ConfiguringHttShardHandlerFactory extends HttpShardHandlerFactory {
 
       } catch (Exception e) {
          log.error("Failed to instantiate bean {}: {}.", beanName, e.getMessage());
-         if (ignore) {
-            return null;
-         }
          throw new IllegalArgumentException("Failed to instantiate bean.", e);
       }
 
@@ -162,11 +157,7 @@ public class ConfiguringHttShardHandlerFactory extends HttpShardHandlerFactory {
             utils.setProperty(bean, entry.getKey(), entry.getValue());
 
          } catch (InvocationTargetException | IllegalAccessException e) {
-            log.error("Failed to configure bean {} with {}#{}: {}.",
-                  beanName, beanClassName, entry.getKey(), e.getMessage());
-            if (ignore) {
-               return null;
-            }
+            log.error("Failed to configure bean {} with {}#{}: {}.", beanName, beanClassName, entry.getKey(), e.getMessage());
             throw new IllegalArgumentException("Failed to configure bean.", e);
          }
       }

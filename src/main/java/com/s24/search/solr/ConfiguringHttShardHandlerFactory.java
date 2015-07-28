@@ -24,17 +24,17 @@ import com.google.common.annotations.VisibleForTesting;
  * Definition of beans in solr.xml:
  *
  * <pre>
- *    &lt;shardHandlerFactory name="shardHandlerFactory" class="com.s24.search.solr.{@linkplain ConfiguringHttShardHandlerFactory}">
- *       &lt;lst name="beans">
- *          &lt;lst name="global-bean-name">
- *             &lt;str name="class">fully qualified bean class name</str>
- *             &lt;str name="propertyName">property value</str>
+ *    &lt;shardHandlerFactory name="shardHandlerFactory" class="com.s24.search.solr.{@linkplain ConfiguringHttShardHandlerFactory}"&gt;
+ *       &lt;lst name="beans"&gt;
+ *          &lt;lst name="global-bean-name"&gt;
+ *             &lt;str name="class"&gt;fully qualified bean class name&lt;/str&gt;
+ *             &lt;str name="propertyName"&gt;property value&lt;/str&gt;
  *             ...
- *          &lt;/lst>
+ *          &lt;/lst&gt;
  *          ...
- *       &lt;/lst>
+ *       &lt;/lst&gt;
  *       ...
- *    &lt;/shardHandlerFactory>
+ *    &lt;/shardHandlerFactory&gt;
  * </pre>
  *
  * The defined beans can be retrieved via {@link ConfiguringHttShardHandlerFactory#lookUp(String, Class)} from plugins.

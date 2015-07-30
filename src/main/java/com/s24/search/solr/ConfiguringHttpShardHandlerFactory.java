@@ -24,7 +24,7 @@ import com.google.common.annotations.VisibleForTesting;
  * Definition of beans in solr.xml:
  *
  * <pre>
- *    &lt;shardHandlerFactory name="shardHandlerFactory" class="com.s24.search.solr.{@linkplain ConfiguringHttShardHandlerFactory}"&gt;
+ *    &lt;shardHandlerFactory name="shardHandlerFactory" class="com.s24.search.solr.{@linkplain ConfiguringHttpShardHandlerFactory}"&gt;
  *       &lt;lst name="beans"&gt;
  *          &lt;lst name="global-bean-name"&gt;
  *             &lt;str name="class"&gt;fully qualified bean class name&lt;/str&gt;
@@ -37,14 +37,14 @@ import com.google.common.annotations.VisibleForTesting;
  *    &lt;/shardHandlerFactory&gt;
  * </pre>
  *
- * The defined beans can be retrieved via {@link ConfiguringHttShardHandlerFactory#lookUp(String, Class)} from plugins.
+ * The defined beans can be retrieved via {@link ConfiguringHttpShardHandlerFactory#lookUp(String, Class)} from plugins.
  */
 @SuppressWarnings("unused") // API
-public class ConfiguringHttShardHandlerFactory extends HttpShardHandlerFactory {
+public class ConfiguringHttpShardHandlerFactory extends HttpShardHandlerFactory {
    /**
     * Logger.
     */
-   private static final Logger log = LoggerFactory.getLogger(ConfiguringHttShardHandlerFactory.class);
+   private static final Logger log = LoggerFactory.getLogger(ConfiguringHttpShardHandlerFactory.class);
 
    /**
     * All data sources by name.

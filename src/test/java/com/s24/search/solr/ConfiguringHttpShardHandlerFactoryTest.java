@@ -20,21 +20,21 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 /**
- * Test for {@link ConfiguringHttShardHandlerFactory}.
+ * Test for {@link ConfiguringHttpShardHandlerFactory}.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ConfiguringHttShardHandlerFactoryTest {
+public class ConfiguringHttpShardHandlerFactoryTest {
    @Mock
    private IndexSchema indexSchema;
 
    @Before
    @After
    public void cleanUp() {
-      ConfiguringHttShardHandlerFactory.clear();
+      ConfiguringHttpShardHandlerFactory.clear();
    }
 
    /**
-    * Test for {@link ConfiguringHttShardHandlerFactory#init(PluginInfo)}.
+    * Test for {@link ConfiguringHttpShardHandlerFactory#init(PluginInfo)}.
     */
    @Test
    public void init() {
@@ -50,10 +50,10 @@ public class ConfiguringHttShardHandlerFactoryTest {
       beans.add("dataSource", poolConfig);
       shardHandlerConfig.put("beans", beans);
       PluginInfo info = new PluginInfo("shardHandler", shardHandlerConfig);
-      ConfiguringHttShardHandlerFactory factory = new ConfiguringHttShardHandlerFactory();
+      ConfiguringHttpShardHandlerFactory factory = new ConfiguringHttpShardHandlerFactory();
       factory.init(info);
 
-      DataSource dataSource = (DataSource) ConfiguringHttShardHandlerFactory.lookUp("dataSource");
+      DataSource dataSource = (DataSource) ConfiguringHttpShardHandlerFactory.lookUp("dataSource");
       assertTrue(dataSource instanceof JdbcDataSource);
       JdbcDataSource jdbcDataSource = (JdbcDataSource) dataSource;
       assertEquals("url", jdbcDataSource.getUrl());

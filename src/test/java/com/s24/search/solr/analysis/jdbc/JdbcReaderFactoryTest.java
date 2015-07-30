@@ -18,7 +18,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 
-import com.s24.search.solr.ConfiguringHttShardHandlerFactory;
+import com.s24.search.solr.ConfiguringHttpShardHandlerFactory;
 
 /**
  * Test for {@link JdbcReaderFactory}.
@@ -28,7 +28,7 @@ public class JdbcReaderFactoryTest {
    @Before
    @After
    public void cleanUp() {
-      ConfiguringHttShardHandlerFactory.clear();
+      ConfiguringHttpShardHandlerFactory.clear();
    }
 
    /**
@@ -48,7 +48,7 @@ public class JdbcReaderFactoryTest {
       pools.add("dataSource", poolConfig);
       shardHandlerConfig.put("pools", pools);
       PluginInfo info = new PluginInfo("shardHandler", shardHandlerConfig);
-      ConfiguringHttShardHandlerFactory factory = new ConfiguringHttShardHandlerFactory();
+      ConfiguringHttpShardHandlerFactory factory = new ConfiguringHttpShardHandlerFactory();
       factory.init(info);
 
       // Configure JdbcReaderFactory.

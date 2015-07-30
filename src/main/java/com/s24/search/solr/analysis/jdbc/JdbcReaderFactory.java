@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
-import com.s24.search.solr.ConfiguringHttShardHandlerFactory;
+import com.s24.search.solr.ConfiguringHttpShardHandlerFactory;
 
 /**
  * Factory to create {@link JdbcReader}s from a Solr params.
@@ -53,7 +53,7 @@ public class JdbcReaderFactory {
       String dataSourceName = config.remove(JdbcReaderFactoryParams.DATASOURCE);
       DataSource dataSource = null;
       if (dataSourceName != null) {
-         dataSource = ConfiguringHttShardHandlerFactory.lookUp(dataSourceName, DataSource.class);
+         dataSource = ConfiguringHttpShardHandlerFactory.lookUp(dataSourceName, DataSource.class);
          if (dataSource == null) {
             dataSource = jndiDataSource(fixJndiName(dataSourceName));
          }

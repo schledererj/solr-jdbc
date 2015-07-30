@@ -13,10 +13,10 @@ Based on that there are Solr synonym filters for reading synonyms and stop words
 ## solr.xml data sources
 
 To define data sources during startup of Solr you need a custom component in your solr.xml: 
-The ConfiguringHttShardHandlerFactory. This is a standard HttpShardHandlerFactory which additionally
+The ConfiguringHttpShardHandlerFactory. This is a standard HttpShardHandlerFactory which additionally
 creates some global unique beans, e.g. data sources. It is something like a poor mans IOC container.
 
-The ConfiguringHttShardHandlerFactory has an additional config option "beans".
+The ConfiguringHttpShardHandlerFactory has an additional config option "beans".
 This a named list containing all bean definitions. 
 A bean definition is a named list which name will be used as bean name.
 It contains a property "class" which defines the bean class. 
@@ -32,7 +32,7 @@ Required libs in the `lib` folder of Solr:
 
 Data sources are defined in your solr.xml:
 
-    <shardHandlerFactory name="shardHandlerFactory" class="com.s24.search.solr.ConfiguringHttShardHandlerFactory">
+    <shardHandlerFactory name="shardHandlerFactory" class="com.s24.search.solr.ConfiguringHttpShardHandlerFactory">
        <lst name="beans">
           <lst name="jdbc/shopping24-search">
             <str name="class">org.apache.commons.dbcp2.BasicDataSource</str>

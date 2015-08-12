@@ -5,8 +5,8 @@ A simple Solr JDBC connection holder that can be injected by JNDI.
 
 # JDBC support for Solr
 
-This project allows for loading data via JDBC and making it available to Solr components, e.g. token filters.
-The data sources can be defined via JNDI or via the solr.xml.
+This project allows for loading data via JDBC and making it available to Solr components, e.g. token filters and
+data import handlers. The data sources can be defined via JNDI or via the solr.xml.
 
 Based on that there are Solr synonym filters for reading synonyms and stop words out of JDBC.
 
@@ -16,15 +16,16 @@ To define data sources during startup of Solr you need a custom component in you
 The ConfiguringHttpShardHandlerFactory. This is a standard HttpShardHandlerFactory which additionally
 creates some global unique beans, e.g. data sources. It is something like a poor mans IOC container.
 
-The ConfiguringHttpShardHandlerFactory has an additional config option "beans".
-This a named list containing all bean definitions. 
+The ConfiguringHttpShardHandlerFactory has an additional config option "beans",
+being a named list containing all bean definitions. 
 A bean definition is a named list which name will be used as bean name.
 It contains a property "class" which defines the bean class. 
 All other properties are properties of the bean which will be set 
 after the bean instance has been created via its default constructor.
 
 Required libs in the `lib` folder of Solr:
-* [`solr-jdbc-<VERSION>-jar-with-dependencies.jar`](https://github.com/shopping24/solr-jdbc-synonyms/releases/download/v2.1.0/solr-jdbc-synonyms-2.1.0-jar-with-dependencies.jar) 
+
+* [`solr-jdbc-<VERSION>-jar-with-dependencies.jar`](https://github.com/shopping24/solr-jdbc-synonyms/releases/download/v2.2.0/solr-jdbc-synonyms-2.2.0-jar-with-dependencies.jar) 
 * Database pool of your choice, e.g. dbcp2.
 * Your SQL driver, e.g. postgresql.
 
@@ -137,8 +138,8 @@ Since 2.2 there's a `DataImportJdbcDataSource` available, that enables data impo
 to use a data source like defined above. In your data handler configuration use:
 
     <dataConfig>
-        <dataSource name="dataImportName" 
-                    type="com.s24.search.solr.analysis.jdbc.DataImportJdbcDataSource" 
+        <dataSource type="com.s24.search.solr.analysis.jdbc.DataImportJdbcDataSource" 
+                    name="dataImportName" 
                     dataSource="jdbc/dataSourceName" />
         ...
     </dataConfig>

@@ -147,8 +147,6 @@ to use a data source like defined above. In your data handler configuration use:
 
 This should install the current version into your local repository
 
-    $ export JAVA_HOME=$(/usr/libexec/java_home -v 1.7)
-    $ export MAVEN_OPTS="-Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dmaven.wagon.http.ssl.ignore.validity.dates=true"
     $ mvn clean install
     
 ### Releasing the project to maven central

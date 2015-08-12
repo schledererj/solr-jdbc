@@ -131,6 +131,18 @@ and is meant to be a drop-in replacement:
 
 The filter has the same configuration parameters as the `JdbcSynonymFilterFactory`.
 
+# Using data import handlers
+
+Since 2.2 there's a `DataImportJdbcDataSource` available, that enables data import handlers 
+to use a data source like defined above. In your data handler configuration use:
+
+    <dataConfig>
+        <dataSource name="dataImportName" 
+                    type="com.s24.search.solr.analysis.jdbc.DataImportJdbcDataSource" 
+                    dataSource="jdbc/dataSourceName" />
+        ...
+    </dataConfig>
+
 ## Building the project
 
 This should install the current version into your local repository

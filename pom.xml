@@ -120,6 +120,12 @@
       </dependency>
 
       <dependency>
+         <groupId>com.lucidworks.analysis</groupId>
+         <artifactId>auto-phrasing-tokenfilter</artifactId>
+         <version>1.6</version>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
          <groupId>org.slf4j</groupId>
          <artifactId>slf4j-api</artifactId>
          <version>${slf4j.version}</version>

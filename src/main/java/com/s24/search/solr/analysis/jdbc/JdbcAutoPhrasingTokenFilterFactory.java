@@ -47,7 +47,7 @@ public class JdbcAutoPhrasingTokenFilterFactory extends AutoPhrasingTokenFilterF
      *           Configuration.
      */
     public JdbcAutoPhrasingTokenFilterFactory(Map<String, String> args) {
-        this(args, JdbcReaderFactory.createFromSolrParams(args, "autophrases"));
+        this(args, JdbcReaderFactory.createFromSolrParams(args, "phrases"));
     }
 
     @Override

@@ -1,8 +1,7 @@
 package com.s24.search.solr.analysis.jdbc;
 
-import com.lucidworks.analysis.AutoPhrasingTokenFilterFactory;
+import com.lucidworks.analysis.*;
 import com.s24.search.solr.analysis.SearcherAware;
-import org.apache.lucene.analysis.synonym.SynonymFilterFactory;
 import org.apache.lucene.analysis.util.ResourceLoader;
 import org.apache.solr.search.SolrIndexSearcher;
 
@@ -11,13 +10,15 @@ import java.nio.charset.Charset;
 import java.util.Map;
 
 /**
- * Created by johnsch on 2/4/2016.
+ * Factory for a {@link AutoPhrasingTokenFilter} which loads autophrases from a database.
+ *
+ * @author John Schlederer
  */
 public class JdbcAutoPhrasingTokenFilterFactory extends AutoPhrasingTokenFilterFactory implements SearcherAware{
 
     /**
      * {@link Charset} to encode synonym database with. Has to be the same as in
-     * the {@link SynonymFilterFactory}.
+     * the {@link AutoPhrasingTokenFilterFactory}.
      */
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
@@ -32,7 +33,7 @@ public class JdbcAutoPhrasingTokenFilterFactory extends AutoPhrasingTokenFilterF
      * @param args
      *           Configuration.
      * @param reader
-     *           Reader for synonyms.
+     *           Reader for autophrases.
      */
     JdbcAutoPhrasingTokenFilterFactory(Map<String, String> args, JdbcReader reader) {
         super(args);

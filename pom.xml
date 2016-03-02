@@ -122,7 +122,7 @@
       <dependency>
          <groupId>com.lucidworks.analysis</groupId>
          <artifactId>auto-phrasing-tokenfilter</artifactId>
-         <version>1.6</version>
+         <version>5.4</version>
          <scope>provided</scope>
       </dependency>
       <dependency>

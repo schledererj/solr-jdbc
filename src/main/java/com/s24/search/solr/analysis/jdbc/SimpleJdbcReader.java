@@ -1,6 +1,6 @@
 package com.s24.search.solr.analysis.jdbc;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkArgument;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,8 +68,10 @@ public class SimpleJdbcReader implements JdbcReader {
     *           Ignore a missing database?.
     */
    protected SimpleJdbcReader(DataSource dataSource, String sql, boolean ignore) {
+      checkArgument(StringUtils.isNotBlank(sql), "Pre-condition violated: sql is specified.");
+
       this.dataSource = dataSource;
-      this.sql = checkNotNull(sql);
+      this.sql = sql;
       this.ignore = ignore;
 
       checkDatasource();

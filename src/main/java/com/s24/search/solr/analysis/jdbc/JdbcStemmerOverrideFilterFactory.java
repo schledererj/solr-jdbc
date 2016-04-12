@@ -2,11 +2,14 @@ package com.s24.search.solr.analysis.jdbc;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.lucene.analysis.core.StopFilterFactory;
 import org.apache.lucene.analysis.miscellaneous.StemmerOverrideFilterFactory;
 import org.apache.lucene.analysis.util.ResourceLoader;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Factory for {@code StemmerOverrideFilter} which loads the dictionary from a database.
@@ -30,8 +33,22 @@ public class JdbcStemmerOverrideFilterFactory extends StemmerOverrideFilterFacto
     *           Configuration.
     */
    public JdbcStemmerOverrideFilterFactory(Map<String, String> args) {
-      super(args);
+      super(superclassArgs(args));
       this.reader = JdbcReaderFactory.createFromSolrParams(args, "dictionary");
+   }
+
+   /**
+    * Returns a map which contains only those arguments that the superclass understands.
+    */
+   private static Map<String, String> superclassArgs(Map<String, String> args) {
+      Map<String, String> result = new HashMap<>();
+      for (String arg : ImmutableList.of("dictionary", "ignoreCase")) {
+         String value = args.get(arg);
+         if (value != null) {
+            result.put(arg, value);
+         }
+      }
+      return result;
    }
 
    @Override

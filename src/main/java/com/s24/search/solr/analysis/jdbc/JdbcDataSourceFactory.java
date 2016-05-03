@@ -16,7 +16,6 @@ import com.s24.search.solr.ConfiguringHttpShardHandlerFactory;
 /**
  * Factory to retrieve {@link DataSource}s.
  */
-@SuppressWarnings("unused") // API
 public class JdbcDataSourceFactory {
    /**
     * Logger.

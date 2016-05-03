@@ -39,7 +39,6 @@ import com.google.common.annotations.VisibleForTesting;
  *
  * The defined beans can be retrieved via {@link ConfiguringHttpShardHandlerFactory#lookUp(String, Class)} from plugins.
  */
-@SuppressWarnings("unused") // API
 public class ConfiguringHttpShardHandlerFactory extends HttpShardHandlerFactory {
    /**
     * Logger.

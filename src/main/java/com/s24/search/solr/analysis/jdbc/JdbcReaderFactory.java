@@ -31,7 +31,6 @@ public class JdbcReaderFactory {
     *           Default synonym file name.
     * @return JdbcReader.
     */
-   @SuppressWarnings("unused") // API
    public static JdbcReader createFromSolrParams(Map<String, String> config, String originalParamName) {
       Preconditions.checkNotNull(config);
 

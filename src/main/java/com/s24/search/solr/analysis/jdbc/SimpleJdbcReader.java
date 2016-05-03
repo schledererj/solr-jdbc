@@ -68,7 +68,7 @@ public class SimpleJdbcReader implements JdbcReader {
     *           Ignore a missing database?.
     */
    protected SimpleJdbcReader(DataSource dataSource, String sql, boolean ignore) {
-      checkArgument(StringUtils.isNotBlank(sql), "Pre-condition violated: sql is specified.");
+      checkArgument(StringUtils.isNotBlank(sql), "Pre-condition violated: sql is not specified.");
 
       this.dataSource = dataSource;
       this.sql = sql;

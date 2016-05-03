@@ -42,6 +42,11 @@ public class JdbcStemmerOverrideFilterFactory extends StemmerOverrideFilterFacto
     */
    private static Map<String, String> superclassArgs(Map<String, String> args) {
       Map<String, String> result = new HashMap<>();
+      
+      // resource loading does not take place if no file has been configured.
+      if (!result.containsKey("dictionary")) {
+         result.put("dictionary", JdbcResourceLoader.DATABASE);
+      }
       for (String arg : ImmutableList.of("dictionary", "ignoreCase")) {
          String value = args.get(arg);
          if (value != null) {

@@ -11,8 +11,6 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.s24.search.solr.ConfiguringHttpShardHandlerFactory;
-
 /**
  * Factory to retrieve {@link DataSource}s.
  */
@@ -36,10 +34,7 @@ public class JdbcDataSourceFactory {
       String dataSourceName = (String) config.remove(JdbcReaderFactoryParams.DATASOURCE);
       DataSource dataSource = null;
       if (dataSourceName != null) {
-         dataSource = ConfiguringHttpShardHandlerFactory.lookUp(dataSourceName, DataSource.class);
-         if (dataSource == null) {
-            dataSource = jndiDataSource(fixJndiName(dataSourceName));
-         }
+         dataSource = jndiDataSource(fixJndiName(dataSourceName));
 
          if (dataSource == null) {
             log.error("Data source {} not found.", dataSourceName);
@@ -70,7 +65,8 @@ public class JdbcDataSourceFactory {
    /**
     * Initializes the database and lookups a {@linkplain DataSource} in JNDI.
     *
-    * @param jndiName JNDI name of data source.
+    * @param jndiName
+    *           JNDI name of data source.
     */
    private static DataSource jndiDataSource(String jndiName) {
       try {

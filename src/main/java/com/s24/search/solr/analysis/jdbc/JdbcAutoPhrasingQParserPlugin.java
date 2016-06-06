@@ -39,7 +39,7 @@ public class JdbcAutoPhrasingQParserPlugin extends QParserPlugin implements Reso
 
     @Override
     public void init(NamedList initArgs) {
-        Log.debug("init AutoPhrasingQParserPlugin...");
+        Log.debug("init JdbcAutoPhrasingQParserPlugin...");
         SolrParams solrParams = SolrParams.toSolrParams(initArgs);
         autoPhrasingParameters = new AutoPhrasingParameters(solrParams);
 
@@ -49,7 +49,7 @@ public class JdbcAutoPhrasingQParserPlugin extends QParserPlugin implements Reso
     @Override
     public QParser createParser(String qStr, SolrParams localParams, SolrParams params,
                                 SolrQueryRequest req) {
-        Log.debug("createParser AutoPhrasingQParserPlugin...");
+        Log.debug("createParser JdbcAutoPhrasingQParserPlugin...");
         ModifiableSolrParams modifiableSolrParams = new ModifiableSolrParams(params);
 
         String modQ = qStr;

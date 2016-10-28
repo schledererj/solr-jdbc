@@ -4,7 +4,7 @@
    <groupId>com.s24.search.solr</groupId>
    <artifactId>solr-jdbc</artifactId>
    <name>solr-jdbc</name>
-   <version>2.3.4-SNAPSHOT</version>
+   <version>2.5.0</version>
    <description>
       A simple Solr JDBC connection holder and a Solr synonym filter loading synonyms from JDBC.</description>
    <url>https://github.com/shopping24/solr-jdbc</url>

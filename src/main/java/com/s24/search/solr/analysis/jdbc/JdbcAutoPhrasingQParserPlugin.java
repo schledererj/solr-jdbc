@@ -92,9 +92,10 @@ public class JdbcAutoPhrasingQParserPlugin extends QParserPlugin implements Reso
         query = query.replaceAll("(?i)(\\d+)\\s?(inch(es)?)", "$1in ");
         query = query.replaceAll("(?i)\\b(\\d+)\\s?(inche?s?|i+n?|[\"]+)\\s?(w|l|h|d)?(x+|\\s+|\\b+|\\s?x+|$)", "$1in ");
         query = query.replaceAll("(?i)(\\d+)\\s?(ounce[s]?|oz)\\b", "$1oz");
-        query = query.replaceAll("(?i)(\\d+)\\s?(quart[s]?|qt[s]?)\\b", "$1qt");
+        query = query.replaceAll("(?i)(\\d+)\\s?(quart[s]?|qt[s]?)\\b", "$1 qt");
         query = query.replaceAll("(?i)(\\d+)\\s?(gallon[s]?|gal?)\\b", "$1gal");
         query = query.replaceAll("(?i)(\\d+)\\s?(yd[s]?|yard[s]?)\\b", "$1yd");
+        query = query.replaceAll("(?i)(\\d+)\\s?(liter[s]?|l)\\b", "$1l");
         query = query.replaceAll("(?i)(\\d+)\\s?(mm|cc|ml)\\b", "$1$2");
 
         // phrases with quotes

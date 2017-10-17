@@ -68,7 +68,7 @@ public class JdbcSynonymFilterFactoryTest extends LuceneTestCase {
       tokenizer.setReader(new StringReader("test1 test2"));
 
       JdbcSynonymFilterFactory factory = new JdbcSynonymFilterFactory(args);
-      factory.inform(new ClasspathResourceLoader());
+      factory.inform(new ClasspathResourceLoader(getClass().getClassLoader()));
 
       try (TokenStream stream = factory.create(tokenizer)) {
          CharTermAttribute attribute = stream.addAttribute(CharTermAttribute.class);

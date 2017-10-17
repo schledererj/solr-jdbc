@@ -68,7 +68,7 @@ public class JdbcStopFilterFactoryTest extends LuceneTestCase {
       tokenizer.setReader(new StringReader("test1 somestring test2 anotherstring"));
 
       JdbcStopFilterFactory factory = new JdbcStopFilterFactory(args);
-      factory.inform(new ClasspathResourceLoader());
+      factory.inform(new ClasspathResourceLoader(getClass().getClassLoader()));
 
       try (TokenStream stream = factory.create(tokenizer)) {
          CharTermAttribute attribute = stream.addAttribute(CharTermAttribute.class);

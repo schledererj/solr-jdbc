@@ -58,7 +58,7 @@
       <junit.version>4.12</junit.version>
       <mockito.version>1.10.19</mockito.version>
       <slf4j.version>1.7.12</slf4j.version>
-      <solr.version>7.0.1</solr.version>
+      <solr.version>7.2.0</solr.version>
       <spring.version>4.1.7.RELEASE</spring.version>
    </properties>
 

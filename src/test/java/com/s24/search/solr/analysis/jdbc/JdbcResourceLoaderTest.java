@@ -19,7 +19,7 @@ import org.junit.Test;
 public class JdbcResourceLoaderTest {
    @Test
    public void openResource() throws Exception {
-      ClasspathResourceLoader parent = new ClasspathResourceLoader();
+      ClasspathResourceLoader parent = new ClasspathResourceLoader(getClass().getClassLoader());
       JdbcReader reader = new TestJdbcReader("test=>test1,test2");
       Charset charset = Charset.forName("UTF-8");
 

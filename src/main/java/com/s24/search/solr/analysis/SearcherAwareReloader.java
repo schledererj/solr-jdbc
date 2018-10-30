@@ -43,16 +43,35 @@ public class SearcherAwareReloader extends AbstractSolrEventListener {
       for (Entry<String, FieldType> entry : searcher.getSchema().getFieldTypes().entrySet()) {
          String name = entry.getKey();
          FieldType fieldType = entry.getValue();
-         
+
          inform("field type", name, fieldType, searcher);
 
          Analyzer indexAnalyzer = fieldType.getIndexAnalyzer();
          Analyzer queryAnalyzer = fieldType.getQueryAnalyzer();
+
+         /**
+          * TokenizerChains uses thread locals and are not intended for reloading. This results in a analyzer that have
+          * a lot of different states in the thread locals, when we do this inform by hand. So we have to create a
+          * completely new TokenizerChain with (implicit) new thread locals to get rid of all old versions. The problem
+          * was that changed synonyms would not appear after a commit.
+          */
          if (indexAnalyzer instanceof TokenizerChain) {
-            inform(name, (TokenizerChain) indexAnalyzer, searcher);
+            TokenizerChain oldTokenizerChain = ((TokenizerChain) indexAnalyzer);
+            TokenizerChain newTokenizerChain = new TokenizerChain(
+                  oldTokenizerChain.getCharFilterFactories(),
+                  oldTokenizerChain.getTokenizerFactory(),
+                  oldTokenizerChain.getTokenFilterFactories());
+            fieldType.setIndexAnalyzer(newTokenizerChain);
+            inform(name, newTokenizerChain, searcher);
          }
          if (indexAnalyzer != queryAnalyzer && queryAnalyzer instanceof TokenizerChain) {
-            inform(name, (TokenizerChain) queryAnalyzer, searcher);
+            TokenizerChain oldTokenizerChain = ((TokenizerChain) queryAnalyzer);
+            TokenizerChain newTokenizerChain = new TokenizerChain(
+                  oldTokenizerChain.getCharFilterFactories(),
+                  oldTokenizerChain.getTokenizerFactory(),
+                  oldTokenizerChain.getTokenFilterFactories());
+            fieldType.setQueryAnalyzer(newTokenizerChain);
+            inform(name, oldTokenizerChain, searcher);
          }
       }
 
@@ -73,18 +92,18 @@ public class SearcherAwareReloader extends AbstractSolrEventListener {
     */
    private void inform(String type, String name, Object o, SolrIndexSearcher searcher) {
       if (o instanceof SearcherAware) {
-         logger.info("Informing searcher aware {} ({}) of field type {} about a new searcher.", 
+         logger.info("Informing searcher aware {} ({}) of field type {} about a new searcher.",
                type, o.getClass().getName(), name);
          try {
             ((SearcherAware) o).inform(searcher);
          } catch (IOException e) {
-            logger.error("Failed to inform {} ({}) of field type {} about a new searcher.", 
+            logger.error("Failed to inform {} ({}) of field type {} about a new searcher.",
                   type, o.getClass().getName(), name, e);
             throw new IllegalArgumentException("Failed to inform about a new searcher.", e);
          }
       }
    }
-   
+
    /**
     * Inform {@link SearcherAware} filter factories in a {@link TokenizerChain} about a new searcher.
     * 

@@ -6,56 +6,9 @@ A simple Solr JDBC connection holder that can be injected by JNDI.
 # JDBC support for Solr
 
 This project allows for loading data via JDBC and making it available to Solr components, e.g. token filters and
-data import handlers. The data sources can be defined via JNDI or via the solr.xml.
+data import handlers. The data sources can be defined via JNDI.
 
 Based on that there are Solr synonym filters for reading synonyms and stop words out of JDBC.
-
-## solr.xml data sources
-
-To define data sources during startup of Solr you need a custom component in your solr.xml: 
-The ConfiguringHttpShardHandlerFactory. This is a standard HttpShardHandlerFactory which additionally
-creates some global unique beans, e.g. data sources. It is something like a poor mans IOC container.
-
-The ConfiguringHttpShardHandlerFactory has an additional config option "beans",
-being a named list containing all bean definitions. 
-A bean definition is a named list which name will be used as bean name.
-It contains a property "class" which defines the bean class. 
-All other properties are properties of the bean which will be set 
-after the bean instance has been created via its default constructor.
-
-Required libs in the `lib` folder of Solr:
-
-* [`solr-jdbc-<VERSION>-jar-with-dependencies.jar`](https://github.com/shopping24/solr-jdbc-synonyms/releases/download/v2.2.0/solr-jdbc-synonyms-2.2.0-jar-with-dependencies.jar) 
-* Database pool of your choice, e.g. dbcp2.
-* Your SQL driver, e.g. postgresql.
-
-### Example using data source defined in solr.xml
-
-Data sources are defined in your solr.xml:
-
-    <shardHandlerFactory name="shardHandlerFactory" class="com.s24.search.solr.ConfiguringHttpShardHandlerFactory">
-       <lst name="beans">
-          <lst name="jdbc/shopping24-search">
-            <str name="class">org.apache.commons.dbcp2.BasicDataSource</str>
-            <str name="driverClassName">org.postgresql.Driver</str>
-            <str name="url">jdbc:postgresql://localhost:5432/database</str>
-            <str name="username">username</str>
-            <str name="password">password</str>
-            <str name="maxIdle">3</str>
-            <str name="maxTotal">10</str>
-            <str name="maxWaitMillis">10000</str>
-          </lst>
-          ...
-       </lst>
-       ...
-    </shardHandlerFactory>
-
-
-In your Solr schema.xml you can reference that data source via its name:
-
-    <filter class="com.s24.search.solr.analysis.jdbc.JdbcSynonymFilterFactory"
-            dataSource="jdbc/shopping24-search" sql="select * from synonyms"
-            ignoreMissingDatabase="true" ignoreCase="true" expand="false"/>
 
 ## JNDI data sources
 
@@ -82,7 +35,7 @@ Data sources are defined in your Tomcat context.xml (e.g. <tomcat>/conf/Catalina
 In your Solr schema.xml you can reference that data source via its name:
 
     <filter class="com.s24.search.solr.analysis.jdbc.JdbcSynonymFilterFactory"
-            dataSource="jdbc/shopping24-search" sql="select * from synonyms"
+            dataSource="jdbc/someName" sql="select * from synonyms"
             ignoreMissingDatabase="true" ignoreCase="true" expand="false"/>
 
 ## Configuring the synonym filter
@@ -94,7 +47,7 @@ Configure the filter in your Solr analyzer chain like this:
 
     <filter class="com.s24.search.solr.analysis.jdbc.JdbcSynonymFilterFactory"   
             sql="SELECT concat(left, '=>', array_to_string(right, ',')) as line FROM synonyms;" 
-            dataSource="jdbc/synonyms" ignoreCase="false" expand="true" />
+            dataSource="jdbc/someName" ignoreCase="false" expand="true" />
 
 The filter takes two arguments over the 
 [`SynonymFilterFactory`](https://wiki.apache.org/solr/AnalyzersTokenizersTokenFilters#solr.SynonymFilterFactory):
@@ -116,7 +69,7 @@ A complete field type might look like this example:
             <tokenizer class="solr.PatternTokenizerFactory" pattern="[\s]+" />
             <filter class="com.s24.search.solr.analysis.jdbc.JdbcSynonymFilterFactory"   
                sql="SELECT concat(left, '=>', array_to_string(right, ',')) as line FROM synonyms;" 
-               jndiName="jdbc/synonyms" ignoreCase="false" expand="true" />
+               jndiName="jdbc/someName" ignoreCase="false" expand="true" />
          </analyzer>
       </fieldType>
 
@@ -128,7 +81,7 @@ and is meant to be a drop-in replacement:
 
     <filter class="com.s24.search.solr.analysis.jdbc.JdbcStopFilterFactory"   
             sql="SELECT stopword FROM stopwords" 
-            jndiName="jdbc/synonyms"/>
+            jndiName="jdbc/someName"/>
 
 The filter has the same configuration parameters as the `JdbcSynonymFilterFactory`.
 
@@ -140,7 +93,7 @@ to use a data source like defined above. In your data handler configuration use:
     <dataConfig>
         <dataSource type="com.s24.search.solr.analysis.jdbc.DataImportJdbcDataSource" 
                     name="dataImportName" 
-                    dataSource="jdbc/dataSourceName" />
+                    dataSource="jdbc/someName" />
         ...
     </dataConfig>
 

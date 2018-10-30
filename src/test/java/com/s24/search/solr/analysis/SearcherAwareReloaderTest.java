@@ -13,6 +13,7 @@ import org.apache.lucene.analysis.util.TokenFilterFactory;
 import org.apache.solr.analysis.TokenizerChain;
 import org.apache.solr.schema.FieldType;
 import org.apache.solr.schema.IndexSchema;
+import org.apache.solr.schema.TextField;
 import org.apache.solr.search.SolrIndexSearcher;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,14 +30,13 @@ import com.google.common.collect.Maps;
 public class SearcherAwareReloaderTest {
    @Mock
    private SolrIndexSearcher searcher;
-   
+
    @Mock
    private SolrIndexSearcher currentSearcher;
-   
+
    @Mock
    private IndexSchema schema;
-   
-   @Mock
+
    private FieldType fieldType;
 
    @Mock
@@ -59,29 +59,31 @@ public class SearcherAwareReloaderTest {
 
    @Before
    public void setUp() {
+      fieldType = new TextField();
+
       Map<String, FieldType> fieldTypes = Maps.newHashMap();
       fieldTypes.put("test", fieldType);
-      
+
       when(searcher.getSchema()).thenReturn(schema);
       when(schema.getFieldTypes()).thenReturn(fieldTypes);
 
       indexAnalyzer = new TokenizerChain(
-            new WhitespaceTokenizerFactory(Maps.<String, String>newHashMap()), 
-            new TokenFilterFactory[]{ indexTokenFilterFactory });
+            new WhitespaceTokenizerFactory(Maps.<String, String> newHashMap()),
+            new TokenFilterFactory[] { indexTokenFilterFactory });
       queryAnalyzer = new TokenizerChain(
-            new WhitespaceTokenizerFactory(Maps.<String, String>newHashMap()),
-            new TokenFilterFactory[]{ queryTokenFilterFactory });
+            new WhitespaceTokenizerFactory(Maps.<String, String> newHashMap()),
+            new TokenFilterFactory[] { queryTokenFilterFactory });
 
       reloader = new SearcherAwareReloader(null);
    }
-   
+
    /**
     * Test for {@link SearcherAwareReloader#newSearcher(SolrIndexSearcher, SolrIndexSearcher)}.
     */
    @Test
    public void newSearcher_differentAnalyzers() throws Exception {
-      when(fieldType.getIndexAnalyzer()).thenReturn(indexAnalyzer);
-      when(fieldType.getQueryAnalyzer()).thenReturn(queryAnalyzer);
+      fieldType.setIndexAnalyzer(indexAnalyzer);
+      fieldType.setQueryAnalyzer(queryAnalyzer);
 
       reloader.newSearcher(searcher, currentSearcher);
 
@@ -95,8 +97,8 @@ public class SearcherAwareReloaderTest {
     */
    @Test
    public void newSearcher_sameAnalyzer() throws Exception {
-      when(fieldType.getIndexAnalyzer()).thenReturn(indexAnalyzer);
-      when(fieldType.getQueryAnalyzer()).thenReturn(indexAnalyzer);
+      fieldType.setIndexAnalyzer(indexAnalyzer);
+      fieldType.setQueryAnalyzer(indexAnalyzer);
 
       reloader.newSearcher(searcher, currentSearcher);
 
@@ -110,8 +112,8 @@ public class SearcherAwareReloaderTest {
     */
    @Test
    public void newSearcher_simpleAnalyzer() throws Exception {
-      when(fieldType.getIndexAnalyzer()).thenReturn(simpleAnalyzer);
-      when(fieldType.getQueryAnalyzer()).thenReturn(simpleAnalyzer);
+      fieldType.setIndexAnalyzer(simpleAnalyzer);
+      fieldType.setQueryAnalyzer(simpleAnalyzer);
 
       reloader.newSearcher(searcher, currentSearcher);
 

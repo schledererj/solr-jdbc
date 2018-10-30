@@ -7,10 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.solr.common.util.NamedList;
-import org.apache.solr.core.PluginInfo;
 import org.h2.jdbcx.JdbcDataSource;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -18,18 +15,11 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 
-import com.s24.search.solr.ConfiguringHttpShardHandlerFactory;
-
 /**
  * Test for {@link JdbcReaderFactory}.
  */
 @RunWith(MockitoJUnitRunner.class)
 public class JdbcReaderFactoryTest {
-   @Before
-   @After
-   public void cleanUp() {
-      ConfiguringHttpShardHandlerFactory.clear();
-   }
 
    /**
     * Test for {@link JdbcReaderFactory#createFromSolrParams(Map, String)}.
@@ -47,9 +37,6 @@ public class JdbcReaderFactoryTest {
       NamedList<Object> pools = new NamedList<>();
       pools.add("dataSource", poolConfig);
       shardHandlerConfig.put("pools", pools);
-      PluginInfo info = new PluginInfo("shardHandler", shardHandlerConfig);
-      ConfiguringHttpShardHandlerFactory factory = new ConfiguringHttpShardHandlerFactory();
-      factory.init(info);
 
       // Configure JdbcReaderFactory.
       Map<String, String> readerDefinition = new HashMap<>();

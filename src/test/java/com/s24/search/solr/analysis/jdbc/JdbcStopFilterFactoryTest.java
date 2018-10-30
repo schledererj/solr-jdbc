@@ -59,7 +59,7 @@ public class JdbcStopFilterFactoryTest extends LuceneTestCase {
    @Test
    public void create() throws Exception {
       Map<String, String> args = new HashMap<>();
-      args.put(AbstractAnalysisFactory.LUCENE_MATCH_VERSION_PARAM, Version.LUCENE_5_0_0.toString());
+      args.put(AbstractAnalysisFactory.LUCENE_MATCH_VERSION_PARAM, Version.LATEST.toString());
       args.put(JdbcReaderFactoryParams.DATASOURCE, "java:comp/env/dataSource");
       args.put(JdbcReaderFactoryParams.SQL, "select stopword from stopwords");
 
@@ -68,7 +68,7 @@ public class JdbcStopFilterFactoryTest extends LuceneTestCase {
       tokenizer.setReader(new StringReader("test1 somestring test2 anotherstring"));
 
       JdbcStopFilterFactory factory = new JdbcStopFilterFactory(args);
-      factory.inform(new ClasspathResourceLoader());
+      factory.inform(new ClasspathResourceLoader(getClass().getClassLoader()));
 
       try (TokenStream stream = factory.create(tokenizer)) {
          CharTermAttribute attribute = stream.addAttribute(CharTermAttribute.class);

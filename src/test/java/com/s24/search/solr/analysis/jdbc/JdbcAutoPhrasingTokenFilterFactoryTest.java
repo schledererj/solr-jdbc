@@ -60,7 +60,7 @@ public class JdbcAutoPhrasingTokenFilterFactoryTest extends LuceneTestCase {
     @Test
     public void create() throws Exception {
         Map<String, String> args = new HashMap<>();
-        args.put(AbstractAnalysisFactory.LUCENE_MATCH_VERSION_PARAM, Version.LUCENE_5_4_0.toString());
+        args.put(AbstractAnalysisFactory.LUCENE_MATCH_VERSION_PARAM, Version.LUCENE_7_3_1.toString());
         args.put(JdbcReaderFactoryParams.DATASOURCE, "java:comp/env/dataSource");
         args.put(JdbcReaderFactoryParams.SQL, "select autophrases from autophrases");
 

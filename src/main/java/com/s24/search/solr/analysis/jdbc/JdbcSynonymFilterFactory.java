@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Map;
 
-import org.apache.lucene.analysis.synonym.SynonymFilter;
+import org.apache.lucene.analysis.synonym.SynonymGraphFilter;
 import org.apache.lucene.analysis.synonym.SynonymFilterFactory;
 import org.apache.lucene.analysis.util.ResourceLoader;
 import org.apache.solr.search.SolrIndexSearcher;

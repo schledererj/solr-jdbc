@@ -97,6 +97,16 @@ public class JdbcAutoPhrasingQParserPlugin extends QParserPlugin implements Reso
         query = query.replaceAll("(?i)(\\d+)\\s?(yd[s]?|yard[s]?)\\b", "$1yd");
         query = query.replaceAll("(?i)(\\d+)\\s?(mm|cc|ml)\\b", "$1$2");
 
+        // Handle watts regular expressions for finding light bulbs. Converts query to a standard of ##Watt, e.g. 60Watt,100Watt,40Watt
+        // Matches following examples but ignores dimensions
+        // 60W
+        // 60 W
+        // 60-watt(s)
+        // 60W x 45D (won't match as this is a dimension)
+        Log.debug("QUERY BEFORE:" + query);
+        query = query.replaceAll("(?i)(\\d+)\\s?\\-?(watt[s]?|(\\d+\\s*)?[w](?!(\\w|(\\s*[X]\\s+(\\d+\\s*)[WDHL])+)))", "$1watt");
+        Log.debug("QUERY AFTER:" + query);
+
         // phrases with quotes
         query = query.replaceAll("(^|\\s)\"", " open_quote` ");
         query = query.replaceAll("\"(\\s|$)", " close_quote` ");

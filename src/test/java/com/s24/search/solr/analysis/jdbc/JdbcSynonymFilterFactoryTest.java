@@ -59,7 +59,7 @@ public class JdbcSynonymFilterFactoryTest extends LuceneTestCase {
    @Test
    public void create() throws Exception {
       Map<String, String> args = new HashMap<>();
-      args.put(AbstractAnalysisFactory.LUCENE_MATCH_VERSION_PARAM, Version.LATEST.toString());
+      args.put(AbstractAnalysisFactory.LUCENE_MATCH_VERSION_PARAM, Version.LUCENE_5_0_0.toString());
       args.put(JdbcReaderFactoryParams.DATASOURCE, "java:comp/env/dataSource");
       args.put(JdbcReaderFactoryParams.SQL, "select synonyms from synonyms");
 
@@ -68,7 +68,7 @@ public class JdbcSynonymFilterFactoryTest extends LuceneTestCase {
       tokenizer.setReader(new StringReader("test1 test2"));
 
       JdbcSynonymFilterFactory factory = new JdbcSynonymFilterFactory(args);
-      factory.inform(new ClasspathResourceLoader(getClass().getClassLoader()));
+      factory.inform(new ClasspathResourceLoader());
 
       try (TokenStream stream = factory.create(tokenizer)) {
          CharTermAttribute attribute = stream.addAttribute(CharTermAttribute.class);

@@ -1,5 +1,7 @@
 package com.s24.search.solr.analysis.jdbc;
 
+import com.s24.search.solr.ConfiguringHttpShardHandlerFactory;
+
 /**
  * Additional Parameters for configuring JDBC based readers.
  * 
@@ -7,7 +9,7 @@ package com.s24.search.solr.analysis.jdbc;
  */
 public interface JdbcReaderFactoryParams {
    /**
-    * Parameter: Name of data source in JNDI.
+    * Parameter: Name of data source in {@link ConfiguringHttpShardHandlerFactory} or in JNDI.
     */
    String DATASOURCE = "dataSource";
 
